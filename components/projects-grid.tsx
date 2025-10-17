@@ -58,7 +58,7 @@ export function ProjectsGrid() {
   ];
 
   return (
-    <div className="relative border border-border/30 rounded-lg p-6 sm:p-8 mb-16 bg-card/5 overflow-hidden">
+    <div className="relative border border-border/30 rounded-lg p-6 sm:p-8 mb-16 bg-card/5 overflow-hidden md:mb-0 md:h-full md:min-h-0">
       {/* Grid background pattern */}
       <div
         className="absolute inset-0 opacity-[0.15]"
@@ -80,9 +80,9 @@ export function ProjectsGrid() {
         }}
       />
 
-      <div className="relative z-10 flex flex-col gap-8">
-        <div className="flex justify-center">
-          <div className="inline-flex items-center px-6 py-3 rounded-lg border border-border bg-card/70 backdrop-blur-sm shadow-sm">
+      <div className="relative z-10 flex flex-col gap-8 md:h-full md:min-h-0">
+        <div className="flex justify-center md:shrink-0">
+          <div className="inline-flex items-center px-6 py-3 ">
             <h1 className="text-xl sm:text-2xl md:text-3xl font-serif italic text-foreground">
               huyixi&apos;s Board
             </h1>
@@ -93,7 +93,7 @@ export function ProjectsGrid() {
           <div className="flex justify-center">
             <div className="relative inline-flex w-full max-w-sm justify-center drop-shadow-2xl">
               <div
-                className="relative w-full overflow-hidden rounded-2xl border border-white/10 bg-black/40"
+                className="relative w-full  "
                 style={{ aspectRatio: "16 / 9" }}
               >
                 <img
@@ -144,14 +144,14 @@ export function ProjectsGrid() {
           </div>
         </div>
 
-        <div className="relative hidden md:grid grid-cols-1 md:grid-cols-2 gap-6 min-h-[700px]">
+        <div className="relative hidden md:grid grid-cols-1 md:grid-cols-2 gap-6 md:flex-1 md:h-full md:min-h-0 md:auto-rows-fr">
           {/* Top-left: My Apps */}
-          <div className="flex items-start">
+          <div className="flex h-full items-start">
             <ProjectCard {...projects[0]} />
           </div>
 
           {/* Top-right: Draggable mood board */}
-          <div className="flex items-start justify-end">
+          <div className="flex h-full items-start justify-end">
             <MoodBoard />
           </div>
 
@@ -175,12 +175,12 @@ export function ProjectsGrid() {
           </div>
 
           {/* Bottom-left: My Blog */}
-          <div className="flex items-end">
+          <div className="flex h-full items-end">
             <ProjectCard {...projects[1]} />
           </div>
 
           {/* Bottom-right: Shopping app with carousel */}
-          <div className="flex items-end justify-end">
+          <div className="flex h-full items-end justify-end">
             <ProjectCard {...projects[2]} />
           </div>
         </div>

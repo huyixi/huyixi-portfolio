@@ -59,23 +59,17 @@ export function Header() {
     );
 
     return (
-      <header className="mb-12 space-y-6 md:space-y-0">
+      <header className="mb-4 space-y-6 md:space-y-0">
         <div className="flex justify-center md:hidden">{availabilityBadge}</div>
         <div className="hidden items-center justify-between md:flex">
-          <div className="flex items-center gap-8">
-            <div className="text-sm text-muted-foreground font-mono">
-              HANGZHOU, CN • {timeLabel}
-            </div>
+          <div className="text-sm text-muted-foreground font-mono">
+            HANGZHOU, CN • {timeLabel}
           </div>
-          <div className="flex items-center gap-4">
-            {availabilityBadge}
-            <div className="text-xs text-muted-foreground font-mono">
-              PRESS{" "}
-              <kbd className="px-2 py-1 bg-muted rounded text-foreground">
-                B
-              </kbd>{" "}
-              TO BOOK A CALL
-            </div>
+          {availabilityBadge}
+          <div className="text-xs text-muted-foreground font-mono">
+            PRESS{" "}
+            <kbd className="px-2 py-1 bg-muted rounded text-foreground">B</kbd>{" "}
+            TO BOOK A CALL
           </div>
         </div>
       </header>
