@@ -5,6 +5,7 @@ import { Lock, ChevronLeft, ChevronRight } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Card } from "@/components/ui/card"
+import { useLanguage } from "@/components/language-provider"
 
 interface ProjectCardProps {
   title: string
@@ -16,6 +17,7 @@ interface ProjectCardProps {
 
 export function ProjectCard({ title, description, locked, images, className }: ProjectCardProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const { dictionary, language } = useLanguage()
 
   const nextImage = () => {
     if (images) {
@@ -38,7 +40,14 @@ export function ProjectCard({ title, description, locked, images, className }: P
     >
       <div className="p-5">
         <div className="flex items-center justify-between mb-6">
-          <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-mono">PROJECT</span>
+          <span
+            className={cn(
+              "text-[10px] text-muted-foreground font-mono",
+              language === "zh" ? "tracking-normal" : "uppercase tracking-wider",
+            )}
+          >
+            {dictionary.projectCard.label}
+          </span>
         </div>
 
         {locked ? (
@@ -90,8 +99,22 @@ export function ProjectCard({ title, description, locked, images, className }: P
         )}
 
         <div className="space-y-1.5">
-          <h3 className="text-xs font-mono uppercase tracking-wider text-foreground">{title}</h3>
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{description}</p>
+          <h3
+            className={cn(
+              "text-xs font-mono text-foreground",
+              language === "zh" ? "tracking-normal" : "uppercase tracking-wider",
+            )}
+          >
+            {title}
+          </h3>
+          <p
+            className={cn(
+              "text-[10px] text-muted-foreground",
+              language === "zh" ? "tracking-normal" : "uppercase tracking-wider",
+            )}
+          >
+            {description}
+          </p>
         </div>
       </div>
     </Card>

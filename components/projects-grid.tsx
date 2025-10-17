@@ -1,6 +1,8 @@
 "use client";
 
 import { IBM_Plex_Serif } from "next/font/google";
+import { useLanguage } from "@/components/language-provider";
+import { cn } from "@/lib/utils";
 
 import { EmailChip } from "./email-chip";
 import { ProjectCard } from "./project-card";
@@ -14,23 +16,25 @@ const ibmSerif = IBM_Plex_Serif({
 const PORTRAIT_SRC = "dog.png";
 
 export function ProjectsGrid() {
+  const { dictionary, language } = useLanguage();
+
   const projects = [
     {
       id: 1,
-      title: "MY APPS",
-      description: "THIS PROJECT IS LOCKED",
+      title: dictionary.projectsGrid.projects.apps.title,
+      description: dictionary.projectsGrid.projects.apps.description,
       locked: true,
     },
     {
       id: 2,
-      title: "MY BLOG",
-      description: "THIS PROJECT IS LOCKED",
+      title: dictionary.projectsGrid.projects.blog.title,
+      description: dictionary.projectsGrid.projects.blog.description,
       locked: true,
     },
     {
       id: 3,
-      title: "SELLDAY • SHOPPING",
-      description: "INSTANT TRANSACTION MAKER",
+      title: dictionary.projectsGrid.projects.sellday.title,
+      description: dictionary.projectsGrid.projects.sellday.description,
       locked: false,
       images: [
         "/mobile-shopping-app-mockup.jpg",
@@ -43,19 +47,28 @@ export function ProjectsGrid() {
   const stickyNotes = [
     {
       id: 1,
-      title: "MY MOOD",
-      content:
-        "Specialized in crafting digital product, mobile apps, and websites",
+      title: dictionary.projectsGrid.stickyNotes.mood.title,
+      content: dictionary.projectsGrid.stickyNotes.mood.content,
       position: "top-0 left-0 sm:top-4 sm:left-4",
+      desktopPosition: "top-0 left-0",
     },
     {
       id: 2,
-      title: "EXPERIENCE",
-      content:
-        "Crafted an outstanding digital product experiences in last 4 years",
+      title: dictionary.projectsGrid.stickyNotes.experience.title,
+      content: dictionary.projectsGrid.stickyNotes.experience.content,
       position: "bottom-0 right-0 sm:bottom-4 sm:right-4",
+      desktopPosition: "bottom-6 right-0",
     },
   ];
+
+  const moodBoardNotes = stickyNotes.map(
+    ({ id, title, content, desktopPosition }) => ({
+      id,
+      title,
+      content,
+      desktopPosition,
+    }),
+  );
 
   return (
     <div className="relative border border-border/30 rounded-lg p-6 sm:p-8 mb-16 bg-card/5 overflow-hidden md:mb-0 md:h-full md:min-h-0">
@@ -81,11 +94,20 @@ export function ProjectsGrid() {
       />
 
       <div className="relative z-10 flex flex-col gap-8 md:h-full md:min-h-0">
-        <div className="flex justify-center md:shrink-0">
-          <div className="inline-flex items-center px-6 py-3 ">
+        <div className="flex justify-center md:hidden">
+          <div className="inline-flex items-center px-6 py-3 rounded-lg bg-card/70 backdrop-blur-sm shadow-sm">
             <h1 className="text-xl sm:text-2xl md:text-3xl font-serif italic text-foreground">
-              huyixi&apos;s Board
+              {dictionary.projectsGrid.boardTitle}
             </h1>
+          </div>
+        </div>
+        <div className="hidden md:block absolute inset-x-0 top-0 bottom-0 z-30 pointer-events-none">
+          <div className="sticky top-6 flex justify-center">
+            <div className="inline-flex items-center px-8 py-4 rounded-lg bg-card/70 backdrop-blur-sm shadow-sm pointer-events-auto">
+              <h1 className="text-3xl font-serif italic text-foreground">
+                {dictionary.projectsGrid.boardTitle}
+              </h1>
+            </div>
           </div>
         </div>
 
@@ -93,7 +115,7 @@ export function ProjectsGrid() {
           <div className="flex justify-center">
             <div className="relative inline-flex w-full max-w-sm justify-center drop-shadow-2xl">
               <div
-                className="relative w-full  "
+                className="relative w-full overflow-hidden rounded-2xl bg-black/40"
                 style={{ aspectRatio: "16 / 9" }}
               >
                 <img
@@ -120,7 +142,14 @@ export function ProjectsGrid() {
               >
                 <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.08] via-transparent to-white/[0.02]" />
                 <div className="relative space-y-3">
-                  <p className="text-[11px] font-mono uppercase tracking-[0.35em] text-white/60">
+                  <p
+                    className={cn(
+                      "text-[11px] font-mono text-white/60",
+                      language === "zh"
+                        ? "tracking-normal"
+                        : "uppercase tracking-[0.35em]",
+                    )}
+                  >
                     {note.title}
                   </p>
                   <p
@@ -144,22 +173,35 @@ export function ProjectsGrid() {
           </div>
         </div>
 
-        <div className="relative hidden md:grid grid-cols-1 md:grid-cols-2 gap-6 md:flex-1 md:h-full md:min-h-0 md:auto-rows-fr">
-          {/* Top-left: My Apps */}
-          <div className="flex h-full items-start">
-            <ProjectCard {...projects[0]} />
+        <div className="relative hidden md:grid md:h-full md:min-h-0 md:flex-1 md:grid-cols-12 md:gap-10 md:auto-rows-min">
+          <div className="md:col-span-4 flex items-start">
+            <ProjectCard
+              {...projects[0]}
+              className="w-full max-w-none"
+            />
           </div>
-
-          {/* Top-right: Draggable mood board */}
-          <div className="flex h-full items-start justify-end">
-            <MoodBoard />
+          <div className="md:col-span-4 md:col-start-9 flex items-start justify-end">
+            <MoodBoard
+              stickyNotes={moodBoardNotes}
+              serifClassName={ibmSerif.className}
+            />
           </div>
-
-          {/* Center: Profile photo positioned absolutely */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
-            <div className="relative inline-flex w-[24rem] max-w-lg justify-center drop-shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
+          <div className="md:col-span-4 md:row-start-2 flex items-end">
+            <ProjectCard
+              {...projects[1]}
+              className="w-full max-w-none"
+            />
+          </div>
+          <div className="md:col-span-4 md:col-start-9 md:row-start-2 flex items-end justify-end">
+            <ProjectCard
+              {...projects[2]}
+              className="w-full max-w-none"
+            />
+          </div>
+          <div className="md:col-span-4 md:col-start-5 md:row-span-2 flex items-center justify-center">
+            <div className="relative inline-flex w-[22rem] max-w-full justify-center drop-shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
               <div
-                className="relative w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40"
+                className="relative w-full overflow-hidden rounded-3xl bg-black/40"
                 style={{ aspectRatio: "16 / 9" }}
               >
                 <img
@@ -172,16 +214,6 @@ export function ProjectsGrid() {
                 <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />
               </div>
             </div>
-          </div>
-
-          {/* Bottom-left: My Blog */}
-          <div className="flex h-full items-end">
-            <ProjectCard {...projects[1]} />
-          </div>
-
-          {/* Bottom-right: Shopping app with carousel */}
-          <div className="flex h-full items-end justify-end">
-            <ProjectCard {...projects[2]} />
           </div>
         </div>
       </div>

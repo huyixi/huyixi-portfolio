@@ -1,13 +1,14 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { motion } from "motion/react";
+import { cn } from "@/lib/utils";
+import { useLanguage } from "@/components/language-provider";
 
 export function Header() {
   const [time, setTime] = useState("");
   const [mounted, setMounted] = useState(false);
-  const pathname = usePathname();
+  const { t, dictionary, language } = useLanguage();
 
   useEffect(() => {
     setMounted(true);
@@ -51,9 +52,45 @@ export function Header() {
   const renderHeader = (timeLabel: string) => {
     const availabilityBadge = (
       <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-card/60 backdrop-blur-sm">
-        <div className="w-2 h-2 rounded-full bg-muted-foreground" />
-        <span className="text-xs text-muted-foreground uppercase tracking-wider">
-          UNAVAILABLE FOR ANY COLLABORATION
+        <span className="relative inline-flex h-2.5 w-2.5 items-center justify-center overflow-hidden rounded-full">
+          <motion.span
+            className="absolute h-full w-full rounded-full bg-emerald-300/45"
+            animate={{ scale: [0.55, 9], opacity: [0.65, 0] }}
+            transition={{
+              duration: 2.4,
+              ease: "easeOut",
+              repeat: Infinity,
+              repeatDelay: 0.6,
+            }}
+          />
+          <motion.span
+            className="absolute h-full w-full rounded-full bg-emerald-400/50"
+            animate={{ scale: [0.75, 9], opacity: [0.8, 0] }}
+            transition={{
+              duration: 1.9,
+              ease: "easeOut",
+              repeat: Infinity,
+              repeatDelay: 0.8,
+            }}
+          />
+          <motion.span
+            className="relative h-2 w-2 rounded-full bg-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.65)]"
+            animate={{ scale: [1, 1.08, 2] }}
+            transition={{
+              duration: 1.6,
+              repeat: Infinity,
+              repeatType: "loop",
+              ease: "easeInOut",
+            }}
+          />
+        </span>
+        <span
+          className={cn(
+            "text-xs text-muted-foreground font-mono",
+            language === "zh" ? "tracking-normal" : "tracking-wider",
+          )}
+        >
+          {dictionary.header.unavailable}
         </span>
       </div>
     );
@@ -63,13 +100,18 @@ export function Header() {
         <div className="flex justify-center md:hidden">{availabilityBadge}</div>
         <div className="hidden items-center justify-between md:flex">
           <div className="text-sm text-muted-foreground font-mono">
-            HANGZHOU, CN • {timeLabel}
+            {t("header.location", { time: timeLabel })}
           </div>
           {availabilityBadge}
-          <div className="text-xs text-muted-foreground font-mono">
-            PRESS{" "}
-            <kbd className="px-2 py-1 bg-muted rounded text-foreground">B</kbd>{" "}
-            TO BOOK A CALL
+          <div
+            className={cn(
+              "text-xs text-muted-foreground font-mono",
+              language === "zh" ? "tracking-normal" : "",
+            )}
+          >
+            {dictionary.header.shortcut.beforeKey}
+            <kbd className="px-2 py-1 bg-muted rounded text-foreground">B</kbd>
+            {dictionary.header.shortcut.afterKey}
           </div>
         </div>
       </header>

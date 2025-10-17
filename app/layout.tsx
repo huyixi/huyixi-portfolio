@@ -5,6 +5,7 @@ import { GeistMono } from "geist/font/mono";
 import { Playfair_Display } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Dock } from "@/components/dock";
+import { LanguageProvider } from "@/components/language-provider";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -29,8 +30,10 @@ export default function RootLayout({
       <body
         className={`font-mono ${GeistSans.variable} ${GeistMono.variable} ${playfair.variable}`}
       >
-        <div>{children}</div>
-        <Dock />
+        <LanguageProvider>
+          <div>{children}</div>
+          <Dock />
+        </LanguageProvider>
         <Analytics />
       </body>
     </html>

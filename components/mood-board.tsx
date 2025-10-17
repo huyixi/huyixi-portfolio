@@ -1,72 +1,75 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useRef, useEffect } from "react"
+import { motion } from "motion/react";
+import { cn } from "@/lib/utils";
+import { useLanguage } from "@/components/language-provider";
 
-export function MoodBoard() {
-  const [position, setPosition] = useState({ x: 0, y: 0 })
-  const [isDragging, setIsDragging] = useState(false)
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
-  const noteRef = useRef<HTMLDivElement>(null)
+type StickyNote = {
+  id: number;
+  title: string;
+  content: string;
+  desktopPosition?: string;
+};
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setIsDragging(true)
-    setDragStart({
-      x: e.clientX - position.x,
-      y: e.clientY - position.y,
-    })
-  }
+interface MoodBoardProps {
+  stickyNotes: StickyNote[];
+  serifClassName?: string;
+}
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (isDragging) {
-        setPosition({
-          x: e.clientX - dragStart.x,
-          y: e.clientY - dragStart.y,
-        })
-      }
-    }
-
-    const handleMouseUp = () => {
-      setIsDragging(false)
-    }
-
-    if (isDragging) {
-      document.addEventListener("mousemove", handleMouseMove)
-      document.addEventListener("mouseup", handleMouseUp)
-    }
-
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove)
-      document.removeEventListener("mouseup", handleMouseUp)
-    }
-  }, [isDragging, dragStart])
-
+export function MoodBoard({ stickyNotes, serifClassName }: MoodBoardProps) {
+  const { language } = useLanguage();
+  
   return (
-    <div className="relative h-full flex items-start justify-center">
-      <div
-        ref={noteRef}
-        className="absolute cursor-move select-none"
-        style={{
-          transform: `translate(${position.x}px, ${position.y}px)`,
-          transition: isDragging ? "none" : "transform 0.2s ease-out",
-        }}
-        onMouseDown={handleMouseDown}
-      >
-        <div className="bg-yellow-100/90 p-6 rounded-sm shadow-lg rotate-2 border-l-4 border-yellow-400/50 max-w-xs">
-          <div className="space-y-2">
-            <p className="text-xs text-yellow-900/60 font-mono mb-3">My Mood</p>
-            <p className="text-sm italic text-yellow-900/80 font-serif leading-relaxed">
-              Specialized in crafting digital product, mobile apps, and websites
-            </p>
-            <p className="text-sm italic text-yellow-900/80 font-serif leading-relaxed mt-4">
-              Crafted an outstanding digital product experiences in last 4 years
-            </p>
-          </div>
-          <div className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full shadow-md" />
-        </div>
+    <div className="relative flex items-start justify-center md:justify-end">
+      <div className="relative h-[18rem] w-[22rem] md:w-[24rem] max-w-full select-none">
+        {stickyNotes.map((note, index) => {
+          const isRight =
+            note.desktopPosition?.includes("right") ??
+            index === 1;
+
+          return (
+            <motion.div
+            key={note.id}
+            className={cn(
+              "absolute max-w-[260px] rounded-2xl border border-white/10 bg-neutral-950/90 px-6 py-6 shadow-[0_16px_40px_rgba(0,0,0,0.5)] backdrop-blur-lg",
+              note.desktopPosition ??
+                (index === 0 ? "top-0 left-0" : "bottom-6 right-0"),
+            )}
+            whileHover={{
+              scale: 1.05,
+              rotate: isRight ? 4 : -4,
+              x: isRight ? 10 : -10,
+              y: 8,
+            }}
+            transition={{ type: "spring", stiffness: 260, damping: 18 }}
+          >
+            <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.08] via-transparent to-white/[0.02]" />
+            <div className="relative space-y-3">
+              <p
+                className={cn(
+                  "text-[11px] font-mono text-white/60",
+                  language === "zh"
+                    ? "tracking-normal"
+                    : "uppercase tracking-[0.35em]",
+                )}
+              >
+                {note.title}
+              </p>
+              <p
+                className={cn(
+                  serifClassName,
+                  "text-sm leading-relaxed text-white/90",
+                )}
+              >
+                {note.content}
+              </p>
+            </div>
+            </motion.div>
+          );
+        })}
       </div>
     </div>
-  )
+  );
 }
