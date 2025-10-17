@@ -127,13 +127,11 @@ export function Header() {
 
     if (currentViewport === "medium") {
       return (
-        <header className="mb-4">
-          <div className="flex flex-col items-center gap-3">
-            <div className="text-sm text-muted-foreground font-mono">
-              {t("header.location", { time: timeLabel })}
-            </div>
-            {availabilityBadge}
+        <header className="mb-6 flex justify-between items-center gap-3">
+          <div className="text-sm text-muted-foreground font-mono">
+            {t("header.location", { time: timeLabel })}
           </div>
+          {availabilityBadge}
         </header>
       );
     }
