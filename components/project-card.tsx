@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { Lock, ChevronLeft, ChevronRight } from "lucide-react"
+import { motion } from "motion/react"
 
 import { cn } from "@/lib/utils"
 import { Card } from "@/components/ui/card"
@@ -17,6 +18,7 @@ interface ProjectCardProps {
 
 export function ProjectCard({ title, description, locked, images, className }: ProjectCardProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [hovered, setHovered] = useState(false)
   const { dictionary, language } = useLanguage()
 
   const nextImage = () => {
@@ -32,23 +34,23 @@ export function ProjectCard({ title, description, locked, images, className }: P
   }
 
   return (
-    <Card
-      className={cn(
-        "relative overflow-hidden border-border bg-card/50 backdrop-blur-sm hover:bg-card/70 transition-all duration-300 group w-full max-w-[280px]",
-        className,
-      )}
+    <div
+      className={cn("w-full max-w-[280px]", className)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
-      <div className="p-5">
-        <div className="flex items-center justify-between mb-6">
-          <span
-            className={cn(
-              "text-[10px] text-muted-foreground font-mono",
-              language === "zh" ? "tracking-normal" : "uppercase tracking-wider",
-            )}
-          >
-            {dictionary.projectCard.label}
-          </span>
-        </div>
+      <Card className="relative overflow-hidden border-border bg-card/50 backdrop-blur-sm transition-colors duration-300 hover:bg-card/70 group">
+        <div className="p-5">
+          <div className="flex items-center justify-between mb-6">
+            <span
+              className={cn(
+                "text-[10px] text-muted-foreground font-mono",
+                language === "zh" ? "tracking-normal" : "uppercase tracking-wider",
+              )}
+            >
+              {dictionary.projectCard.label}
+            </span>
+          </div>
 
         {locked ? (
           <div className="flex flex-col items-center justify-center py-12">
@@ -98,25 +100,45 @@ export function ProjectCard({ title, description, locked, images, className }: P
           </div>
         )}
 
-        <div className="space-y-1.5">
-          <h3
-            className={cn(
-              "text-xs font-mono text-foreground",
-              language === "zh" ? "tracking-normal" : "uppercase tracking-wider",
-            )}
+          <motion.div
+            className="relative overflow-hidden rounded-lg border border-border/60 bg-background/40"
+            animate={hovered ? { boxShadow: "0px 6px 18px rgba(0,0,0,0.18)" } : { boxShadow: "0px 0px 0px rgba(0,0,0,0)" }}
+            transition={{ duration: 0.25 }}
           >
-            {title}
-          </h3>
-          <p
-            className={cn(
-              "text-[10px] text-muted-foreground",
-              language === "zh" ? "tracking-normal" : "uppercase tracking-wider",
-            )}
-          >
-            {description}
-          </p>
+            <motion.div
+              className="absolute inset-0 rounded-lg bg-primary/5"
+              animate={hovered ? { opacity: 0.12 } : { opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            />
+            <div className="relative">
+              <motion.h3
+                className={cn(
+                  "px-3 pt-3 text-xs font-mono text-foreground transition-transform origin-left",
+                  language === "zh" ? "tracking-normal" : "uppercase tracking-wider",
+                )}
+                animate={hovered ? { scale: 0.94, rotate: -1.5, y: 4 } : { scale: 1, rotate: 0, y: 0 }}
+                transition={{ type: "spring", stiffness: 320, damping: 20 }}
+              >
+                {title}
+              </motion.h3>
+              <motion.div
+                className="px-3 pb-3"
+                animate={hovered ? { y: 24, opacity: 0 } : { y: 0, opacity: 1 }}
+                transition={{ duration: 0.22 }}
+              >
+                <p
+                  className={cn(
+                    "text-[10px] text-muted-foreground",
+                    language === "zh" ? "tracking-normal" : "uppercase tracking-wider",
+                  )}
+                >
+                  {description}
+                </p>
+              </motion.div>
+            </div>
+          </motion.div>
         </div>
-      </div>
-    </Card>
+      </Card>
+    </div>
   )
 }

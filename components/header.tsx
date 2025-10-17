@@ -5,9 +5,21 @@ import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/components/language-provider";
 
+type Viewport = "small" | "medium" | "large";
+
+const getViewportCategory = (width: number): Viewport => {
+  if (width < 660) return "small";
+  if (width < 1024) return "medium";
+  return "large";
+};
+
 export function Header() {
   const [time, setTime] = useState("");
   const [mounted, setMounted] = useState(false);
+  const [viewport, setViewport] = useState<Viewport>(() => {
+    if (typeof window === "undefined") return "large";
+    return getViewportCategory(window.innerWidth);
+  });
   const { t, dictionary, language } = useLanguage();
 
   useEffect(() => {
@@ -49,7 +61,17 @@ export function Header() {
     return () => window.removeEventListener("keydown", handleKeyPress);
   }, []);
 
-  const renderHeader = (timeLabel: string) => {
+  useEffect(() => {
+    const updateViewport = () => {
+      setViewport(getViewportCategory(window.innerWidth));
+    };
+
+    updateViewport();
+    window.addEventListener("resize", updateViewport);
+    return () => window.removeEventListener("resize", updateViewport);
+  }, []);
+
+  const renderHeader = (timeLabel: string, currentViewport: Viewport) => {
     const availabilityBadge = (
       <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-card/60 backdrop-blur-sm">
         <span className="relative inline-flex h-2.5 w-2.5 items-center justify-center overflow-hidden rounded-full">
@@ -95,10 +117,30 @@ export function Header() {
       </div>
     );
 
+    if (currentViewport === "small") {
+      return (
+        <header className="mb-4">
+          <div className="flex justify-center">{availabilityBadge}</div>
+        </header>
+      );
+    }
+
+    if (currentViewport === "medium") {
+      return (
+        <header className="mb-4">
+          <div className="flex flex-col items-center gap-3">
+            <div className="text-sm text-muted-foreground font-mono">
+              {t("header.location", { time: timeLabel })}
+            </div>
+            {availabilityBadge}
+          </div>
+        </header>
+      );
+    }
+
     return (
-      <header className="mb-4 space-y-6 md:space-y-0">
-        <div className="flex justify-center md:hidden">{availabilityBadge}</div>
-        <div className="hidden items-center justify-between md:flex">
+      <header className="mb-4">
+        <div className="flex items-center justify-between gap-6">
           <div className="text-sm text-muted-foreground font-mono">
             {t("header.location", { time: timeLabel })}
           </div>
@@ -119,8 +161,8 @@ export function Header() {
   };
 
   if (!mounted) {
-    return renderHeader("00:00:00 AM");
+    return renderHeader("00:00:00 AM", viewport);
   }
 
-  return renderHeader(time);
+  return renderHeader(time, viewport);
 }
