@@ -1,5 +1,16 @@
+import type { Metadata } from "next";
+
 import { Header } from "@/components/header";
 import { ProjectsGrid } from "@/components/projects-grid";
+
+export const metadata: Metadata = {
+  title: "Home | huyixi portfolio",
+  description:
+    "Explore huyixi's latest product design explorations, mood boards, and featured case study work.",
+  alternates: {
+    canonical: "/",
+  },
+};
 
 export default function Home() {
   return (

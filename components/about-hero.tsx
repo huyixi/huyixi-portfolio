@@ -11,7 +11,7 @@ export function AboutHero() {
       <div className="relative">
         <div className="relative w-48 h-48 rounded-full overflow-hidden border-4 border-white shadow-2xl">
           <Image
-            src="dog.png"
+            src="/dog.png"
             alt="huyixi"
             fill
             className="object-cover"

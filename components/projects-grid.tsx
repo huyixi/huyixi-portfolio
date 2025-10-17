@@ -1,19 +1,15 @@
 "use client";
 
-import { IBM_Plex_Serif } from "next/font/google";
+import Image from "next/image";
 import { useLanguage } from "@/components/language-provider";
+import { ibmPlexSerif } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 
 import { EmailChip } from "./email-chip";
 import { ProjectCard } from "./project-card";
 import { MoodBoard } from "./mood-board";
 
-const ibmSerif = IBM_Plex_Serif({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-});
-
-const PORTRAIT_SRC = "dog.png";
+const PORTRAIT_SRC = "/dog.png";
 
 export function ProjectsGrid() {
   const { dictionary, language } = useLanguage();
@@ -118,10 +114,13 @@ export function ProjectsGrid() {
                 className="relative w-full overflow-hidden rounded-2xl bg-black/40"
                 style={{ aspectRatio: "16 / 9" }}
               >
-                <img
+                <Image
                   src={PORTRAIT_SRC}
                   alt="huyixi portrait"
-                  className="h-full w-full object-cover"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 22rem"
+                  className="object-cover"
+                  priority
                 />
               </div>
               <div className="absolute -bottom-3 -right-3 w-10 h-10 rounded-full border-4 border-background bg-card flex items-center justify-center">
@@ -153,7 +152,7 @@ export function ProjectsGrid() {
                     {note.title}
                   </p>
                   <p
-                    className={`${ibmSerif.className} text-sm leading-relaxed text-white/90`}
+                    className={`${ibmPlexSerif.className} text-sm leading-relaxed text-white/90`}
                   >
                     {note.content}
                   </p>
@@ -183,7 +182,7 @@ export function ProjectsGrid() {
           <div className="md:col-span-4 md:col-start-9 flex items-start justify-end">
             <MoodBoard
               stickyNotes={moodBoardNotes}
-              serifClassName={ibmSerif.className}
+              serifClassName={ibmPlexSerif.className}
             />
           </div>
           <div className="md:col-span-4 md:row-start-2 flex items-end">
@@ -204,10 +203,12 @@ export function ProjectsGrid() {
                 className="relative w-full overflow-hidden rounded-3xl bg-black/40"
                 style={{ aspectRatio: "16 / 9" }}
               >
-                <img
+                <Image
                   src={PORTRAIT_SRC}
                   alt="huyixi portrait"
-                  className="h-full w-full object-cover"
+                  fill
+                  sizes="(min-width: 768px) 22rem, 100vw"
+                  className="object-cover"
                 />
               </div>
               <div className="absolute -bottom-4 -right-4 w-12 h-12 rounded-full border-4 border-background bg-card flex items-center justify-center">

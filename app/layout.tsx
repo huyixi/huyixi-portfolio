@@ -1,18 +1,10 @@
 import type React from "react";
 import type { Metadata } from "next";
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
-import { Playfair_Display } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Dock } from "@/components/dock";
 import { LanguageProvider } from "@/components/language-provider";
+import { geistMono, geistSans, playfair } from "@/lib/fonts";
 import "./globals.css";
-
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-playfair",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "huyixi's Board - Product Designer Portfolio",
@@ -28,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`font-mono ${GeistSans.variable} ${GeistMono.variable} ${playfair.variable}`}
+        className={`font-mono ${geistSans.variable} ${geistMono.variable} ${playfair.variable}`}
       >
         <LanguageProvider>
           <div>{children}</div>
